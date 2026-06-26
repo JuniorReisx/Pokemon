@@ -47,7 +47,7 @@ export function normalizePokemon(pokemon) {
   };
 }
 
-export async function fetchAllPokemonWithDetails(limit = 151) {
+export async function fetchAllPokemonWithDetails(limit = 151, onProgress) {
   const listData = await fetchPokemonList(limit);
   const batchSize = 30;
   const results = [];
@@ -58,6 +58,8 @@ export async function fetchAllPokemonWithDetails(limit = 151) {
       batch.map((item) => fetchPokemonDetails(item.name))
     );
     results.push(...batchDetails.map(normalizePokemon));
+    const sorted = [...results].sort((a, b) => a.id - b.id);
+    onProgress?.(sorted, i + batch.length >= listData.results.length);
   }
 
   return results.sort((a, b) => a.id - b.id);

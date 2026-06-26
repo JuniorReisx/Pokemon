@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { ActivityIndicator, Image, ScrollView, Share } from 'react-native';
+import { ActivityIndicator, Animated, Image, ScrollView, Share } from 'react-native';
 import styled from 'styled-components/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { TypeBadge } from '../components/TypeBadge';
 import { StatBar } from '../components/StatBar';
+import { BottomNav } from '../components/BottomNav';
 import { fetchPokemonDetails, normalizePokemon } from '../services/pokeApi';
 import {
   colors,
@@ -12,12 +13,13 @@ import {
   formatName,
   formatWeight,
   getPrimaryTypeColor,
+  getTotalStats,
   radius,
   spacing,
 } from '../theme';
 
 const STAT_LABELS = {
-  hp: 'Hp',
+  hp: 'HP',
   attack: 'Attack',
   defense: 'Defense',
   'special-attack': 'Sp. Atk',
@@ -25,34 +27,69 @@ const STAT_LABELS = {
   speed: 'Speed',
 };
 
+const STAT_ORDER = ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed'];
+const TABS = ['ABOUT', 'STATS'];
+
 export function DetailsScreen({ route, navigation }) {
-  const { pokemonId } = route.params;
-  const [pokemon, setPokemon] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
+  const { pokemonId, pokemon: cachedPokemon } = route.params;
+  const [pokemon, setPokemon] = React.useState(cachedPokemon || null);
+  const [loading, setLoading] = React.useState(!cachedPokemon);
   const [error, setError] = React.useState(null);
+  const [activeTab, setActiveTab] = React.useState('STATS');
+  const imageScale = React.useRef(new Animated.Value(0.85)).current;
+  const imageOpacity = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
+    let cancelled = false;
+
     async function loadPokemon() {
       try {
-        setLoading(true);
+        if (!cachedPokemon) {
+          setLoading(true);
+        }
         setError(null);
         const data = await fetchPokemonDetails(pokemonId);
-        setPokemon(normalizePokemon(data));
+        if (!cancelled) {
+          setPokemon(normalizePokemon(data));
+        }
       } catch (err) {
-        setError(err.message);
+        if (!cancelled && !cachedPokemon) {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
     loadPokemon();
-  }, [pokemonId]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pokemonId, cachedPokemon]);
 
   React.useEffect(() => {
     if (pokemon) {
-      navigation.setOptions({ title: formatName(pokemon.name) });
+      navigation.setOptions({ headerShown: false });
+      imageScale.setValue(0.85);
+      imageOpacity.setValue(0);
+      Animated.parallel([
+        Animated.spring(imageScale, {
+          toValue: 1,
+          friction: 6,
+          tension: 80,
+          useNativeDriver: true,
+        }),
+        Animated.timing(imageOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start();
     }
-  }, [pokemon, navigation]);
+  }, [pokemon, navigation, imageScale, imageOpacity]);
 
   const handleShare = async () => {
     if (!pokemon) return;
@@ -84,7 +121,7 @@ export function DetailsScreen({ route, navigation }) {
     }
   };
 
-  if (loading) {
+  if (loading && !pokemon) {
     return (
       <LoadingScreen>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -95,55 +132,99 @@ export function DetailsScreen({ route, navigation }) {
   if (error || !pokemon) {
     return (
       <LoadingScreen>
-        <ErrorText>{error || 'Pokémon não encontrado'}</ErrorText>
+        <ErrorText>{error || 'Pokémon not found'}</ErrorText>
       </LoadingScreen>
     );
   }
 
   const accentColor = getPrimaryTypeColor(pokemon.types);
-  const mainStats = pokemon.stats.filter((stat) =>
-    ['hp', 'attack', 'defense'].includes(stat.name)
-  );
+  const orderedStats = STAT_ORDER.map((name) =>
+    pokemon.stats.find((stat) => stat.name === name)
+  ).filter(Boolean);
+  const totalStats = getTotalStats(pokemon.stats);
 
   return (
-    <Screen edges={['bottom']}>
+    <Screen edges={['top']}>
       <HeroSection accentColor={accentColor}>
-        <HeroPattern />
-        <TypesRow>
-          {pokemon.types.map((type) => (
-            <TypeBadge key={type} type={type} />
-          ))}
-        </TypesRow>
-        <PokemonImage source={{ uri: pokemon.image }} resizeMode="contain" />
-        <PokemonId>#{String(pokemon.id).padStart(3, '0')}</PokemonId>
+        <Petals />
+        <PetalsSecondary />
+        <TopBar>
+          <BackButton onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={22} color={colors.white} />
+          </BackButton>
+          <HeroTitle>{formatName(pokemon.name)}</HeroTitle>
+          <ShareIconButton onPress={handleShare}>
+            <Ionicons name="share-social-outline" size={22} color={colors.white} />
+          </ShareIconButton>
+        </TopBar>
+        <AnimatedImageWrapper
+          style={{
+            opacity: imageOpacity,
+            transform: [{ scale: imageScale }],
+          }}
+        >
+          <PokemonImage source={{ uri: pokemon.image }} resizeMode="contain" />
+        </AnimatedImageWrapper>
       </HeroSection>
 
-      <DetailsCard>
-        <CardHandle />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <TraitsRow>
-            <TraitItem>
-              <TraitValue>{formatHeight(pokemon.height)}</TraitValue>
-              <TraitLabel>Height</TraitLabel>
-            </TraitItem>
-            <TraitDivider />
-            <TraitItem>
-              <TraitValue>{formatWeight(pokemon.weight)}</TraitValue>
-              <TraitLabel>Weight</TraitLabel>
-            </TraitItem>
-          </TraitsRow>
-
-          <SectionTitle>Base Stats</SectionTitle>
-          {mainStats.map((stat) => (
-            <StatBar key={stat.name} stat={stat} />
+      <DetailsSheet>
+        <SheetHandle />
+        <TabsRow>
+          {TABS.map((tab) => (
+            <TabButton key={tab} onPress={() => setActiveTab(tab)}>
+              <TabText active={activeTab === tab}>{tab}</TabText>
+              {activeTab === tab && <TabDot accentColor={accentColor} />}
+            </TabButton>
           ))}
+        </TabsRow>
 
-          <ShareButton onPress={handleShare} accentColor={accentColor}>
-            <Ionicons name="share-social-outline" size={20} color={colors.white} />
-            <ShareButtonText>Share</ShareButtonText>
-          </ShareButton>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {activeTab === 'ABOUT' ? (
+            <AboutContent>
+              <AboutRow>
+                <AboutLabel>Types</AboutLabel>
+                <TypesRow>
+                  {pokemon.types.map((type) => (
+                    <TypeBadge key={type} type={type} />
+                  ))}
+                </TypesRow>
+              </AboutRow>
+              <AboutRow>
+                <AboutLabel>Height</AboutLabel>
+                <AboutValue>{formatHeight(pokemon.height)}</AboutValue>
+              </AboutRow>
+              <AboutRow>
+                <AboutLabel>Weight</AboutLabel>
+                <AboutValue>{formatWeight(pokemon.weight)}</AboutValue>
+              </AboutRow>
+              <AboutRow>
+                <AboutLabel>Number</AboutLabel>
+                <AboutValue>#{String(pokemon.id).padStart(3, '0')}</AboutValue>
+              </AboutRow>
+              <AboutRow>
+                <AboutLabel>Total Stats</AboutLabel>
+                <AboutValue highlight>{totalStats}</AboutValue>
+              </AboutRow>
+              <ShareButton onPress={handleShare} accentColor={accentColor} activeOpacity={0.9}>
+                <Ionicons name="share-social-outline" size={20} color={colors.white} />
+                <ShareButtonText>Share</ShareButtonText>
+              </ShareButton>
+            </AboutContent>
+          ) : (
+            <StatsContent>
+              {orderedStats.map((stat, index) => (
+                <StatBar key={stat.name} stat={stat} delay={index * 80} />
+              ))}
+              <ShareButton onPress={handleShare} accentColor={accentColor} activeOpacity={0.9}>
+                <Ionicons name="share-social-outline" size={20} color={colors.white} />
+                <ShareButtonText>Share</ShareButtonText>
+              </ShareButton>
+            </StatsContent>
+          )}
         </ScrollView>
-      </DetailsCard>
+      </DetailsSheet>
+
+      <BottomNav active="home" />
     </Screen>
   );
 }
@@ -166,62 +247,91 @@ const ErrorText = styled.Text`
 `;
 
 const HeroSection = styled.View`
-  height: 320px;
-  background-color: ${({ accentColor }) => accentColor}33;
+  height: 340px;
+  background-color: ${({ accentColor }) => accentColor};
   align-items: center;
   justify-content: center;
-  padding-top: ${spacing.md}px;
   overflow: hidden;
 `;
 
-const HeroPattern = styled.View`
+const Petals = styled.View`
   position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 100px;
-  background-color: rgba(255, 255, 255, 0.3);
-  top: -40px;
-  right: -40px;
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  background-color: rgba(255, 255, 255, 0.2);
+  top: 80px;
+  left: 30px;
 `;
 
-const TypesRow = styled.View`
-  flex-direction: row;
+const PetalsSecondary = styled.View`
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: rgba(255, 255, 255, 0.15);
+  top: 120px;
+  right: 50px;
+`;
+
+const TopBar = styled.View`
   position: absolute;
   top: ${spacing.md}px;
-  left: ${spacing.lg}px;
-  z-index: 1;
+  left: ${spacing.md}px;
+  right: ${spacing.md}px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+`;
+
+const BackButton = styled.TouchableOpacity`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  align-items: center;
+  justify-content: center;
+`;
+
+const HeroTitle = styled.Text`
+  font-size: 20px;
+  font-weight: 800;
+  color: ${colors.white};
+  flex: 1;
+  text-align: center;
+`;
+
+const ShareIconButton = styled.TouchableOpacity`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  align-items: center;
+  justify-content: center;
+`;
+
+const AnimatedImageWrapper = styled(Animated.View)`
+  align-items: center;
+  justify-content: center;
+  margin-top: ${spacing.xl}px;
 `;
 
 const PokemonImage = styled(Image)`
-  width: 240px;
-  height: 240px;
+  width: 260px;
+  height: 260px;
 `;
 
-const PokemonId = styled.Text`
-  position: absolute;
-  bottom: ${spacing.lg}px;
-  right: ${spacing.lg}px;
-  font-size: 48px;
-  font-weight: 900;
-  color: rgba(0, 0, 0, 0.06);
-  letter-spacing: -2px;
-`;
-
-const DetailsCard = styled.View`
+const DetailsSheet = styled.View`
   flex: 1;
   background-color: ${colors.surface};
-  border-top-left-radius: ${radius.xl}px;
-  border-top-right-radius: ${radius.xl}px;
+  border-top-left-radius: ${radius.xxl}px;
+  border-top-right-radius: ${radius.xxl}px;
   margin-top: -${spacing.xl}px;
-  padding: ${spacing.lg}px;
-  shadow-color: ${colors.black};
-  shadow-offset: 0px -4px;
-  shadow-opacity: 0.08;
-  shadow-radius: 12px;
-  elevation: 8;
+  padding: ${spacing.md}px ${spacing.lg}px 0;
 `;
 
-const CardHandle = styled.View`
+const SheetHandle = styled.View`
   width: 40px;
   height: 4px;
   background-color: ${colors.border};
@@ -230,67 +340,86 @@ const CardHandle = styled.View`
   margin-bottom: ${spacing.lg}px;
 `;
 
-const TraitsRow = styled.View`
+const TabsRow = styled.View`
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
   margin-bottom: ${spacing.lg}px;
-  padding-bottom: ${spacing.lg}px;
   border-bottom-width: 1px;
   border-bottom-color: ${colors.border};
 `;
 
-const TraitItem = styled.View`
-  flex: 1;
+const TabButton = styled.TouchableOpacity`
+  margin-right: ${spacing.lg}px;
+  padding-bottom: ${spacing.sm}px;
   align-items: center;
 `;
 
-const TraitValue = styled.Text`
-  font-size: 22px;
-  font-weight: 800;
-  color: ${colors.textPrimary};
+const TabText = styled.Text`
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: ${({ active }) => (active ? colors.textPrimary : colors.textMuted)};
 `;
 
-const TraitLabel = styled.Text`
-  font-size: 13px;
-  color: ${colors.textSecondary};
+const TabDot = styled.View`
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: ${({ accentColor }) => accentColor};
   margin-top: ${spacing.xs}px;
-  font-weight: 500;
+`;
+
+const AboutContent = styled.View`
+  padding-bottom: ${spacing.xl}px;
+`;
+
+const AboutRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-vertical: ${spacing.md}px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${colors.border};
+`;
+
+const AboutLabel = styled.Text`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${colors.textSecondary};
   text-transform: uppercase;
   letter-spacing: 0.5px;
 `;
 
-const TraitDivider = styled.View`
-  width: 1px;
-  height: 40px;
-  background-color: ${colors.border};
+const AboutValue = styled.Text`
+  font-size: 16px;
+  font-weight: 700;
+  color: ${({ highlight }) => (highlight ? colors.primary : colors.textPrimary)};
 `;
 
-const SectionTitle = styled.Text`
-  font-size: 18px;
-  font-weight: 700;
-  color: ${colors.textPrimary};
-  margin-bottom: ${spacing.md}px;
+const TypesRow = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 1;
+  margin-left: ${spacing.md}px;
+`;
+
+const StatsContent = styled.View`
+  padding-bottom: ${spacing.xl}px;
 `;
 
 const ShareButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background-color: ${({ accentColor }) => accentColor || colors.primary};
+  background-color: ${({ accentColor }) => accentColor || colors.primaryDark};
   padding: ${spacing.md}px;
-  border-radius: ${radius.lg}px;
-  margin-top: ${spacing.md}px;
-  shadow-color: ${({ accentColor }) => accentColor || colors.primary};
-  shadow-offset: 0px 4px;
-  shadow-opacity: 0.3;
-  shadow-radius: 8px;
-  elevation: 4;
+  border-radius: ${radius.xl}px;
+  margin-top: ${spacing.lg}px;
 `;
 
 const ShareButtonText = styled.Text`
   color: ${colors.white};
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   margin-left: ${spacing.sm}px;
 `;

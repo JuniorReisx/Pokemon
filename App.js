@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -9,39 +9,31 @@ import { colors } from './theme';
 
 const Stack = createStackNavigator();
 
+const navTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: colors.background,
+    card: colors.surface,
+    text: colors.textPrimary,
+    border: colors.border,
+    primary: colors.primary,
+  },
+};
+
 export default function App() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <StatusBar style="dark" />
+      <NavigationContainer theme={navTheme}>
+        <StatusBar style="light" />
         <Stack.Navigator
           screenOptions={{
-            headerStyle: {
-              backgroundColor: colors.background,
-              elevation: 0,
-              shadowOpacity: 0,
-              borderBottomWidth: 0,
-            },
-            headerTintColor: colors.primaryDark,
-            headerTitleStyle: {
-              fontWeight: '700',
-              fontSize: 18,
-            },
+            headerShown: false,
+            cardStyle: { backgroundColor: colors.background },
           }}
         >
-          <Stack.Screen
-            name="List"
-            component={ListScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Details"
-            component={DetailsScreen}
-            options={{
-              title: 'Details',
-              headerBackTitleVisible: false,
-            }}
-          />
+          <Stack.Screen name="List" component={ListScreen} />
+          <Stack.Screen name="Details" component={DetailsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

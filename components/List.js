@@ -1,17 +1,42 @@
-import { FlatList, ActivityIndicator } from 'react-native';
+import * as React from 'react';
+import { ActivityIndicator, FlatList } from 'react-native';
 import styled from 'styled-components/native';
 import { PokemonListItem } from './PokemonListItem';
+import { PokemonListItemSkeleton } from './PokemonListItemSkeleton';
 import { colors, spacing } from '../theme';
 
-export function List({ data, onItemPress, loading, ListHeaderComponent }) {
+const SKELETON_COUNT = 6;
+
+export function List({
+  data,
+  onItemPress,
+  loading,
+  loadingMore,
+  ListHeaderComponent,
+}) {
+  const renderItem = React.useCallback(
+    ({ item }) => <PokemonListItem pokemon={item} onPress={onItemPress} />,
+    [onItemPress]
+  );
+
+  const keyExtractor = React.useCallback((item) => String(item.id), []);
+
+  const listFooter = loadingMore ? (
+    <FooterLoader>
+      <ActivityIndicator size="small" color={colors.primary} />
+      <FooterText>Loading more Pokémon...</FooterText>
+    </FooterLoader>
+  ) : null;
+
   if (loading && data.length === 0) {
     return (
       <LoadingWrapper>
         {ListHeaderComponent}
-        <LoadingContainer>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <LoadingText>Carregando Pokémon...</LoadingText>
-        </LoadingContainer>
+        <SkeletonGrid>
+          {Array.from({ length: SKELETON_COUNT }).map((_, index) => (
+            <PokemonListItemSkeleton key={index} />
+          ))}
+        </SkeletonGrid>
       </LoadingWrapper>
     );
   }
@@ -19,19 +44,23 @@ export function List({ data, onItemPress, loading, ListHeaderComponent }) {
   return (
     <FlatList
       data={data}
-      keyExtractor={(item) => String(item.id)}
-      renderItem={({ item }) => (
-        <PokemonListItem pokemon={item} onPress={onItemPress} />
-      )}
+      numColumns={2}
+      keyExtractor={keyExtractor}
+      renderItem={renderItem}
       ListHeaderComponent={ListHeaderComponent}
+      ListFooterComponent={listFooter}
       ListEmptyComponent={
         <EmptyContainer>
-          <EmptyText>Nenhum Pokémon encontrado</EmptyText>
-          <EmptySubtext>Tente outro nome ou tipo</EmptySubtext>
+          <EmptyText>No Pokémon found</EmptyText>
+          <EmptySubtext>Try another name or type</EmptySubtext>
         </EmptyContainer>
       }
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: spacing.xl, flexGrow: 1 }}
+      initialNumToRender={10}
+      maxToRenderPerBatch={8}
+      windowSize={7}
+      removeClippedSubviews
+      contentContainerStyle={{ paddingBottom: spacing.md, flexGrow: 1 }}
     />
   );
 }
@@ -40,16 +69,22 @@ const LoadingWrapper = styled.View`
   flex: 1;
 `;
 
-const LoadingContainer = styled.View`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  padding: ${spacing.xl}px;
+const SkeletonGrid = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
 `;
 
-const LoadingText = styled.Text`
-  margin-top: ${spacing.md}px;
-  font-size: 15px;
+const FooterLoader = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: ${spacing.lg}px;
+  width: 100%;
+`;
+
+const FooterText = styled.Text`
+  margin-left: ${spacing.sm}px;
+  font-size: 14px;
   color: ${colors.textSecondary};
   font-weight: 500;
 `;
@@ -58,6 +93,7 @@ const EmptyContainer = styled.View`
   align-items: center;
   padding: ${spacing.xl}px;
   margin-top: ${spacing.xl}px;
+  width: 100%;
 `;
 
 const EmptyText = styled.Text`

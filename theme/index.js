@@ -1,19 +1,23 @@
 export const colors = {
   white: '#FFFFFF',
-  black: '#1A1A2E',
-  background: '#F0F4F8',
-  surface: '#FFFFFF',
-  border: '#E2E8F0',
-  textPrimary: '#1A1A2E',
-  textSecondary: '#64748B',
-  textMuted: '#94A3B8',
-  primary: '#2D6A4F',
-  primaryDark: '#1B4332',
-  primaryLight: '#40916C',
-  accent: '#52B788',
-  headerBg: '#D8F3DC',
+  black: '#000000',
+  background: '#0C0C0C',
+  surface: '#161616',
+  surfaceElevated: '#1F1F1F',
+  card: '#1A1A1A',
+  border: '#2A2A2A',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#9CA3AF',
+  textMuted: '#6B7280',
+  primary: '#4ADE80',
+  primaryDark: '#22C55E',
+  accent: '#FACC15',
+  headerBg: '#1F1F1F',
   error: '#EF4444',
-  shadow: 'rgba(45, 106, 79, 0.15)',
+  hp: '#FF5959',
+  statGreen: '#4ADE80',
+  shadow: 'rgba(0, 0, 0, 0.4)',
+  overlay: 'rgba(0, 0, 0, 0.6)',
 };
 
 export const TYPE_COLORS = {
@@ -50,6 +54,7 @@ export const radius = {
   md: 12,
   lg: 16,
   xl: 24,
+  xxl: 32,
   full: 999,
 };
 
@@ -72,4 +77,12 @@ export function formatWeight(hectograms) {
 export function getPrimaryTypeColor(types = []) {
   const primaryType = types[0]?.toLowerCase();
   return TYPE_COLORS[primaryType] || colors.primary;
+}
+
+export function getTotalStats(stats = []) {
+  return stats.reduce((sum, stat) => sum + stat.value, 0);
+}
+
+export function getStatBarColor(statName) {
+  return statName === 'hp' ? colors.hp : colors.statGreen;
 }
