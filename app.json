@@ -1,29 +1,40 @@
 {
   "expo": {
     "name": "Gil Maik - Taqtile Case",
-    "slug": "gil-maik-taqtile-case",
+    "slug": "gil-maik-taqtile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/pokemon.png",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/pokemon.png",
       "resizeMode": "contain",
       "backgroundColor": "#0C0C0C"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.juniorreisx.gilmaiktaqtile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/pokemon.png",
         "backgroundColor": "#0C0C0C"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.juniorreisx.gilmaiktaqtile"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/po.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b79db577-98d0-4b7f-9018-aab7b9a50197"
+      }
+    },
+    "owner": "juniorreisx"
   }
 }

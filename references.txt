@@ -9,6 +9,9 @@ References used to complete the Taqtile Pokémon Challenge:
 3. PokeAPI - Pokémon Details Endpoint
    https://pokeapi.co/api/v2/pokemon/{id_or_name}
 
+4. PokeAPI - Official Artwork Sprites
+   https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/
+
 5. React Navigation - Stack Navigator
    https://reactnavigation.org/docs/stack-navigator/
 
