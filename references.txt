@@ -1,1 +1,31 @@
-Don't forget to update this!
+References used to complete the Taqtile Pokémon Challenge:
+
+1. PokeAPI Documentation
+   https://pokeapi.co/docs/v2
+
+2. PokeAPI - Pokémon List Endpoint
+   https://pokeapi.co/api/v2/pokemon
+
+3. PokeAPI - Pokémon Details Endpoint
+   https://pokeapi.co/api/v2/pokemon/{id_or_name}
+
+4. PokeAPI - Official Artwork Sprites
+   https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/
+
+5. React Navigation - Stack Navigator
+   https://reactnavigation.org/docs/stack-navigator/
+
+6. Styled Components - React Native
+   https://styled-components.com/docs/basics#react-native
+
+7. React Native - Share API
+   https://reactnative.dev/docs/share
+
+8. Expo Documentation
+   https://docs.expo.dev/
+
+9. Figma Design Reference (Taqtile Challenge)
+   https://www.figma.com/design/QnboI5tTOiUMg7PGA0Y6YM/Case-Est%C3%A1gio---Poke%CC%81mon-Challenger
+
+10. @expo/vector-icons (Ionicons)
+    https://icons.expo.fyi/

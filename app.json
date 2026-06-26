@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "taqtile-internship-challenge---pokemon",
-    "slug": "snack-33afad55-b58f-41ee-a485-7452deedca68",
+    "name": "Gil Maik - Taqtile Case",
+    "slug": "gil-maik-taqtile-case",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#D8F3DC"
     },
     "ios": {
       "supportsTablet": true
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#D8F3DC"
       },
       "edgeToEdgeEnabled": true
     },
