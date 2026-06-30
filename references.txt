@@ -1,34 +1,61 @@
-References used to complete the Taqtile Pokémon Challenge:
-
-1. PokeAPI Documentation
+API
+---
+1. PokeAPI - Documentation
    https://pokeapi.co/docs/v2
+   General reference for the REST API used throughout the app.
 
 2. PokeAPI - Pokémon List Endpoint
    https://pokeapi.co/api/v2/pokemon
+   Used to fetch the list of Pokémon for the List screen.
 
 3. PokeAPI - Pokémon Details Endpoint
    https://pokeapi.co/api/v2/pokemon/{id_or_name}
+   Used to fetch stats, types, height, weight, and other details for the Details screen.
 
-4. PokeAPI - Official Artwork Sprites
-   https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/
+4. PokeAPI - Type List Endpoint
+   https://pokeapi.co/api/v2/type
+   Used to populate the type filter options on the List screen.
 
-5. React Navigation - Stack Navigator
+5. PokeAPI - Official Artwork Sprites
+   https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{id}.png
+   Used to display high-resolution Pokémon artwork instead of low-res sprites.
+
+Navigation
+----------
+6. React Navigation - Stack Navigator
    https://reactnavigation.org/docs/stack-navigator/
+   Used to implement navigation between the List and Details screens.
 
-6. Styled Components - React Native
+Styling
+-------
+7. Styled Components - React Native
    https://styled-components.com/docs/basics#react-native
+   Used to style all components instead of StyleSheet.
 
-7. React Native - Share API
-   https://reactnative.dev/docs/share
-
-8. Expo Documentation
-   https://docs.expo.dev/
-
-9. Figma Design Reference (Taqtile Challenge)
-   https://www.figma.com/design/QnboI5tTOiUMg7PGA0Y6YM/Case-Est%C3%A1gio---Poke%CC%81mon-Challenger
-
-10. Figma Community - Pokemon Mobile App Exploration
-   https://www.figma.com/design/d2n27yOoMC1mvnz4U2UBaz/Pokemon-Mobile-App-Exploration--Community-?node-id=0-1&p=f&t=TRkeL03bKc9Fy5VT-0
-
-11. @expo/vector-icons (Ionicons)
+8. @expo/vector-icons (Ionicons)
    https://icons.expo.fyi/
+   Used to find icon names available in the Expo vector-icons library
+   (e.g. search icon, back arrow, share icon).
+
+Native APIs
+-----------
+9. React Native - Share API
+   https://reactnative.dev/docs/share
+   Used to implement the share button on the Details screen.
+
+Tooling
+-------
+10. Expo Documentation
+    https://docs.expo.dev/
+    General reference for Expo/Snack configuration and limitations.
+
+Design Reference
+----------------
+11. Figma Design Reference (Taqtile Challenge)
+    https://www.figma.com/design/QnboI5tTOiUMg7PGA0Y6YM/Case-Estágio---Pokémon-Challenger
+    Official design reference provided for the Details screen layout.
+
+12. Figma Community - Pokemon Mobile App Exploration
+    https://www.figma.com/design/d2n27yOoMC1mvnz4U2UBaz/Pokemon-Mobile-App-Exploration--Community-
+    Used as additional visual/UX inspiration, since the candidate's solution
+    doesn't need to match the Figma exactly.

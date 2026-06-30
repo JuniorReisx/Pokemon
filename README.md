@@ -34,11 +34,13 @@ A Pokedex application built with React Native (Expo) as part of the technical ch
 │   ├── ListScreen.js                # List screen (FlatList + search/filter)
 │   └── DetailsScreen.js             # Details and stats screen
 ├── components/
+│   ├── List.js                      # FlatList wrapper with skeleton/empty states
 │   ├── PokemonListItem.js           # List item (image, name, type)
-│   ├── PokemonListItemSqueleton.js  # Loading skeleton
-│   ├── PesquisaBar.js               # Search/filter bar
+│   ├── PokemonListItemSkeleton.js   # Loading skeleton
+│   ├── SearchBar.js                 # Search/filter bar
 │   ├── StatBar.js                   # Stat bar (HP, ATK, DEF...)
-│   └── TipoBadge.js                 # Pokémon type badge
+│   ├── TypeBadge.js                 # Pokémon type badge
+│   └── BottomNav.js                 # Bottom navigation bar
 ├── services/                        # PokeAPI integration
 ├── theme/                           # Colors and theme (light/dark)
 └── references.txt                   # References used during development
@@ -66,13 +68,23 @@ Then open it in an emulator, a physical device (via Expo Go), or the browser.
 - High-resolution artwork:
   `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{id}.png`
 
-## 📌 Technical Decisions
+## Technical Decisions
 
-> Space for you to describe specific choices, for example:
-- Why `styled-components` was chosen over `StyleSheet`.
-- How loading/error states are handled for API calls (e.g., skeleton while loading).
-- How search by name + filter by type was implemented (debounce, local filtering vs. new API calls, etc.).
-- Theme structure (colors, dark mode).
+Notes on choices made during development:
+
+- **Treated this as onboarding into an existing project**, not a greenfield build. I kept the folder structure and styling patterns from the starter template instead of reorganizing everything to match personal preference.
+
+- **`styled-components` across the entire app** — the project already used this approach; staying consistent avoids mixing `StyleSheet` with styled components and makes it easier to reuse tokens from `theme/`.
+
+- **Skeleton loader on the list** — the PokeAPI can be slow when fetching details for many Pokémon. A skeleton communicates loading state better than a blank screen or a centered spinner.
+
+- **Batch loading (30 at a time)** — each Pokémon requires an individual request. Data is fetched in batches and the list updates progressively, with an "X of 151 loaded" indicator.
+
+- **Search and filter in one component, local filtering** — name search and type filter live in the same bar to keep the UI clean. Once all 151 Pokémon are in memory, filtering runs locally via `useMemo` with no extra API calls.
+
+- **Did not follow the Figma pixel-perfect** — the challenge states the design does not need to be identical; I prioritized consistency with the dark theme already set up in `App.js`.
+
+- **With more time** — unit tests for `services/pokeApi.js`, local cache/persistence, real API pagination instead of loading all 151 at once, and debounced search if the list grew significantly.
 
 ## 📚 References
 
