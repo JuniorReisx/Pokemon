@@ -1,60 +1,83 @@
-# Pokedex - Taqtile Challenge
 
-## About
+# Gil Maik - Taqtile Case
 
-This project is an incomplete Pokedex App using React Native. Your task is to finish this project using data from a Rest API, create a details page to check for pokemon's stats and implement a share feature to send some pokeculture to your friends.
+A Pokedex application built with React Native (Expo) as part of the technical challenge for Taqtile's internship program. The app consumes the [PokeAPI](https://pokeapi.co/) to list the first 151 Pokémon, display details and stats for each one, allow search and filtering by type, and share information about the selected Pokémon.
 
-The main purpose of this challenge is not evaluate the candidates' knowledge of react native or front-end development but to show us how they solve a problem and how they study for it.
+## 🚀 Live Demo
 
-The candidates should think this challenge as their first task working at Taqtile, so what they delivery in this challenge is what we would expect from their work in a real project given the same constraints.
+[**Open on Expo Snack**](https://snack.expo.dev/@juniorreisx/gil-maik---taqtile-case?platform=web)
 
-## TODOs
+## 🎯 Features
 
-- [x] Change the name of the snack to match this pattern: "Your Name - Taqtile Case";
-- [x] Use a FlatList component in List.js;
-- [x] Refactor all styles to use `styled-components`
-- [x] Implement a navigation from the List page to the Details page using `react-navigation`;
-- [x] Create the Pokemon Details Page using the provided [Figma](https://www.figma.com/design/QnboI5tTOiUMg7PGA0Y6YM/Case-Est%C3%A1gio---Poke%CC%81mon-Challenger?t=Lw9mjfb9pf4cuMKx-1) as reference;
-- [x] Use [PokeAPI](https://pokeapi.co/) to populate the Pokemon List Page (https://pokeapi.co/api/v2/pokemon);
-- [x] Use  [PokeAPI](https://pokeapi.co/) to populate the Pokemon Details Page (https://pokeapi.co/api/v2/pokemon/ditto);
-- [x] Implement a search bar that allows users to search Pokémon by name and filter by type;
-- [x] The list items must contain: Pokémon image, name, and type;
-- [x] Implement a share button in the Details page to share a message with the Pokemon's stats;
-- [x] Update the "references" file with your references;
+- **Pokémon listing**: list with image, name, and type(s) for each Pokémon, rendered with `FlatList`.
+- **Search and filter**: search bar by name, with an additional filter by type.
+- **Details page**: displays image, types, and stats (HP, Attack, Defense, etc.) for the selected Pokémon, with navigation via `react-navigation`.
+- **Sharing**: button on the details screen to share the Pokémon's stats via the native share API.
+- **Dark theme** consistent across the whole navigation flow.
+- **Styling** done entirely with `styled-components`, no `StyleSheet` usage.
 
-## General guidelines
+## 🛠️ Tech Stack
 
-The candidates' solution is not required to be exactly equal to the provided Figma design. It should be only be used as an example of what atributes are desired to be found on the details page.
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/) (Snack)
+- [React Navigation](https://reactnavigation.org/) (Stack Navigator)
+- [styled-components](https://styled-components.com/)
+- [PokeAPI](https://pokeapi.co/) (REST)
+- `expo-status-bar`, `react-native-safe-area-context`
 
-We ask for the candidates to *do not* share their final code to their classmates or to ask for others the solution of this challenge. The candidate is more than welcome to ask us for any doubts or problems, discuss possible solutions with their colleagues and share interesting references with them.
+## 📂 Project Structure
 
-The candidates should send us their final solution in format of a Snack in their account.
+```
+.
+├── App.js                          # Navigation and theme setup
+├── screens/
+│   ├── ListScreen.js                # List screen (FlatList + search/filter)
+│   └── DetailsScreen.js             # Details and stats screen
+├── components/
+│   ├── PokemonListItem.js           # List item (image, name, type)
+│   ├── PokemonListItemSqueleton.js  # Loading skeleton
+│   ├── PesquisaBar.js               # Search/filter bar
+│   ├── StatBar.js                   # Stat bar (HP, ATK, DEF...)
+│   └── TipoBadge.js                 # Pokémon type badge
+├── services/                        # PokeAPI integration
+├── theme/                           # Colors and theme (light/dark)
+└── references.txt                   # References used during development
+```
 
-The candidates should send us the references they used to complete the challenge in the file **references.txt**.
+## ▶️ How to Run
 
-## Tips
+### Via Snack (recommended)
+1. Open the project: [snack.expo.dev/@juniorreisx/gil-maik---taqtile-case](https://snack.expo.dev/@juniorreisx/gil-maik---taqtile-case?platform=web)
+2. Choose **Web**, **iOS**, or **Android** in the preview panel, or scan the QR Code with the Expo Go app on your phone.
 
-- To get the best image for the pokemons use the following url pattern: 
+### Locally
+```bash
+git clone https://github.com/JuniorReisx/Pokemon.git
+cd Pokemon
+npm install
+npm start
+```
+Then open it in an emulator, a physical device (via Expo Go), or the browser.
 
-  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/<pokemon-number>.png`
+## 🔌 API Integration
 
-  example: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png` for bulbasaur:
+- Pokémon list: `GET https://pokeapi.co/api/v2/pokemon`
+- Pokémon details: `GET https://pokeapi.co/api/v2/pokemon/{name or id}`
+- High-resolution artwork:
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{id}.png`
 
-  ![bulbasur](https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png)
-  
+## 📌 Technical Decisions
 
-- Double-check the version of the library's documentation you are reading. The web version of Expo does not support the latest version of all libraries we are using in this challenge.
+> Space for you to describe specific choices, for example:
+- Why `styled-components` was chosen over `StyleSheet`.
+- How loading/error states are handled for API calls (e.g., skeleton while loading).
+- How search by name + filter by type was implemented (debounce, local filtering vs. new API calls, etc.).
+- Theme structure (colors, dark mode).
 
+## 📚 References
 
+The references used during development are listed in [`references.txt`](./references.txt).
 
-## About Expo
+## 👤 Author
 
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by clicking the **Run** button or use the simulator by clicking **Tap to Play**. When you're done, click **Save** and share the link!
-
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Export** your project and use it with [expo-cli](https://docs.expo.io/versions/latest/introduction/installation.html).
-
-All projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the **Embed** button.
-
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.io).
-
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack-web).
+Gil Maik
