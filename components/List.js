@@ -59,7 +59,6 @@ export function List({
       initialNumToRender={10}
       maxToRenderPerBatch={8}
       windowSize={7}
-      removeClippedSubviews
       contentContainerStyle={{ paddingBottom: spacing.md, flexGrow: 1 }}
     />
   );

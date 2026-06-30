@@ -1,9 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'react-native';
 import { TypeBadge } from './TypeBadge';
 import { colors, formatName, getPrimaryTypeColor, radius, spacing } from '../theme';
+
+const CARD_HEIGHT = 215;
+const IMAGE_SIZE = 100;
 
 function PokemonListItemComponent({ pokemon, onPress }) {
   const accentColor = getPrimaryTypeColor(pokemon.types);
@@ -13,15 +15,14 @@ function PokemonListItemComponent({ pokemon, onPress }) {
       <Card onPress={() => onPress(pokemon)} accentColor={accentColor} activeOpacity={0.9}>
         <CardGlow accentColor={accentColor} />
         <ImageContainer>
-          <Image
+          <PokemonImage
             source={{ uri: pokemon.image }}
-            style={{ width: 110, height: 110 }}
             resizeMode="contain"
           />
         </ImageContainer>
         <CardFooter>
           <FooterLeft>
-            <PokemonName>{formatName(pokemon.name)}</PokemonName>
+            <PokemonName numberOfLines={1}>{formatName(pokemon.name)}</PokemonName>
             <TypesRow>
               {pokemon.types.map((type) => (
                 <TypeBadge key={type} type={type} small dark />
@@ -40,16 +41,15 @@ function PokemonListItemComponent({ pokemon, onPress }) {
 export const PokemonListItem = React.memo(PokemonListItemComponent);
 
 const CardWrapper = styled.View`
-  flex: 1;
+  width: 50%;
   padding: ${spacing.xs}px;
-  max-width: 50%;
 `;
 
 const Card = styled.TouchableOpacity`
   background-color: ${({ accentColor }) => accentColor};
   border-radius: ${radius.xl}px;
   padding: ${spacing.md}px;
-  min-height: 180px;
+  height: ${CARD_HEIGHT}px;
   overflow: hidden;
   shadow-color: ${({ accentColor }) => accentColor};
   shadow-offset: 0px 8px;
@@ -71,14 +71,20 @@ const CardGlow = styled.View`
 const ImageContainer = styled.View`
   align-items: center;
   justify-content: center;
-  flex: 1;
-  padding-vertical: ${spacing.sm}px;
+  height: ${IMAGE_SIZE}px;
+  margin-bottom: ${spacing.sm}px;
+`;
+
+const PokemonImage = styled.Image`
+  width: ${IMAGE_SIZE}px;
+  height: ${IMAGE_SIZE}px;
 `;
 
 const CardFooter = styled.View`
   flex-direction: row;
   align-items: flex-end;
   justify-content: space-between;
+  flex: 1;
 `;
 
 const FooterLeft = styled.View`

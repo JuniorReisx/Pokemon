@@ -14,16 +14,15 @@ export function PokemonListItemSkeleton() {
 }
 
 const CardWrapper = styled.View`
-  flex: 1;
+  width: 50%;
   padding: ${spacing.xs}px;
-  max-width: 50%;
 `;
 
 const Card = styled.View`
   background-color: ${colors.surfaceElevated};
   border-radius: ${radius.xl}px;
   padding: ${spacing.md}px;
-  min-height: 180px;
+  height: 215px;
   overflow: hidden;
 `;
 

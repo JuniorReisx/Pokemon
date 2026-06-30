@@ -27,8 +27,8 @@ References used to complete the Taqtile Pokémon Challenge:
 9. Figma Design Reference (Taqtile Challenge)
    https://www.figma.com/design/QnboI5tTOiUMg7PGA0Y6YM/Case-Est%C3%A1gio---Poke%CC%81mon-Challenger
 
-10. Figma Design Reference ()
-https://www.figma.com/design/d2n27yOoMC1mvnz4U2UBaz/Pokemon-Mobile-App-Exploration--Community-?node-id=0-1&p=f&t=TRkeL03bKc9Fy5VT-0
+10. Figma Community - Pokemon Mobile App Exploration
+   https://www.figma.com/design/d2n27yOoMC1mvnz4U2UBaz/Pokemon-Mobile-App-Exploration--Community-?node-id=0-1&p=f&t=TRkeL03bKc9Fy5VT-0
 
 11. @expo/vector-icons (Ionicons)
-    https://icons.expo.fyi/
+   https://icons.expo.fyi/

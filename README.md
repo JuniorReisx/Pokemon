@@ -10,17 +10,17 @@ The candidates should think this challenge as their first task working at Taqtil
 
 ## TODOs
 
-- [ ] Change the name of the snack to match this pattern: "Your Name - Taqtile Case";
-- [ ] Use a FlatList component in List.js;
-- [ ] Refactor all styles to use `styled-components`
-- [ ] Implement a navigation from the List page to the Details page using `react-navigation`;
-- [ ] Create the Pokemon Details Page using the provided [Figma](https://www.figma.com/design/QnboI5tTOiUMg7PGA0Y6YM/Case-Est%C3%A1gio---Poke%CC%81mon-Challenger?t=Lw9mjfb9pf4cuMKx-1) as reference;
-- [ ] Use [PokeAPI](https://pokeapi.co/) to populate the Pokemon List Page (https://pokeapi.co/api/v2/pokemon);
-- [ ] Use  [PokeAPI](https://pokeapi.co/) to populate the Pokemon Details Page (https://pokeapi.co/api/v2/pokemon/ditto);
-- [ ] Implement a search bar that allows users to search Pokémon by name and filter by type;
-- [ ] The list items must contain: Pokémon image, name, and type;
-- [ ] Implement a share button in the Details page to share a message with the Pokemon's stats;
-- [ ] Update the "references" file with your references;
+- [x] Change the name of the snack to match this pattern: "Your Name - Taqtile Case";
+- [x] Use a FlatList component in List.js;
+- [x] Refactor all styles to use `styled-components`
+- [x] Implement a navigation from the List page to the Details page using `react-navigation`;
+- [x] Create the Pokemon Details Page using the provided [Figma](https://www.figma.com/design/QnboI5tTOiUMg7PGA0Y6YM/Case-Est%C3%A1gio---Poke%CC%81mon-Challenger?t=Lw9mjfb9pf4cuMKx-1) as reference;
+- [x] Use [PokeAPI](https://pokeapi.co/) to populate the Pokemon List Page (https://pokeapi.co/api/v2/pokemon);
+- [x] Use  [PokeAPI](https://pokeapi.co/) to populate the Pokemon Details Page (https://pokeapi.co/api/v2/pokemon/ditto);
+- [x] Implement a search bar that allows users to search Pokémon by name and filter by type;
+- [x] The list items must contain: Pokémon image, name, and type;
+- [x] Implement a share button in the Details page to share a message with the Pokemon's stats;
+- [x] Update the "references" file with your references;
 
 ## General guidelines
 
